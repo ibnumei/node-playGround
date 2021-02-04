@@ -12,7 +12,7 @@ fs
     const model = require(path.join(__dirname, file));
     const instanceName = file.split('.')[0];
     route[instanceName] = model;
-    console.log('Load Error files...', instanceName);
+    console.log('Load Routes files...', instanceName);
   });
 
 module.exports = route;

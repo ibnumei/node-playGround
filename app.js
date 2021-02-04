@@ -9,11 +9,14 @@ const usersRouter = require('./routes/users');
 const routes = require('./src/route/index');
 const { errorMiddleware } = require('./src/middleware/errorMiddleware');
 const cors = require('cors');
+const io = require('socket.io')();
 
 require('dotenv').config();
 
 const app = express();
 
+//config socket.io server
+app.locals.io = io;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,12 +35,15 @@ app.use('/users', usersRouter);
 
 // Including all registered router
 Object.keys(routes).forEach((key) => {
-  app.use('/ground', routes[key]);
+  // app.use('/ground', routes[key]);
+  app.use('/ground', new routes[key](app).getRoute());
 });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  req.io = app.locals.io;
+  // next(createError(404));
+  next();
 });
 
 // error handler
